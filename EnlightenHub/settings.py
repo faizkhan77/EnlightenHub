@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import dj_database_url
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-&2je@d9a%3^-kz-++(re3j@@(7t(a7wh!zt69k#$xur)(b5i(h"
+# SECRET_KEY = "django-insecure-&2je@d9a%3^-kz-++(re3j@@(7t(a7wh!zt69k#$xur)(b5i(h"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -92,9 +94,8 @@ DATABASES = {
     # }
 }
 
-DATABASES["default"] = dj_database_url.parse(
-    "postgresql://enlightenhub_django_user:eFnYrFgHViuCmDqLyua9ko7odSQbkuwy@dpg-ct98khhu0jms73cnadag-a.oregon-postgres.render.com/enlightenhub_django"
-)
+database_url = os.environ.get("DATABASE_URL")
+DATABASES["default"] = dj_database_url.parse(database_url)
 
 
 # Password validation
@@ -136,7 +137,7 @@ USE_TZ = True
 # STATICFILES_DIRS = [BASE_DIR / "static"]
 # MEDIA_ROOT = BASE_DIR / "media"
 # STATIC_ROOT = BASE_DIR / "staticfiles"  # FOR COLLECTSTATIC FOR WHITENOISE
-import os
+
 
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
