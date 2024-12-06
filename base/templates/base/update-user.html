@@ -1,0 +1,73 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+<style>
+    /* Ensure that the layout box takes up full available height and doesn't overflow the navbar */
+    .layout__box {
+        display: flex;
+        flex-direction: column;
+        max-height: 80vh;  /* Adjust this height to your needs (max height of 80% of the viewport) */
+        overflow: hidden;  /* Prevent overflow of the entire box */
+    }
+
+    /* Make the layout body scrollable */
+    .layout__body {
+        flex-grow: 1;
+        overflow-y: auto;  /* Allow vertical scrolling */
+        padding: 10px;  /* Add padding to create some space around the form */
+        height: 100%;  /* Ensure it takes full height within the box */
+    }
+
+    /* Ensure the form itself is responsive */
+    .form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;  /* Space between form fields */
+    }
+
+    /* Optional: Adding some margins to make it visually better */
+    .layout__boxHeader {
+        margin-bottom: 20px;
+    }
+</style>
+
+<main class="update-account layout">
+    <div class="container">
+        <div class="layout__box">
+            <div class="layout__boxHeader">
+                <div class="layout__boxTitle">
+                    <a href="{{request.META.HTTP_REFERER}}">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                            viewBox="0 0 32 32">
+                            <title>arrow-left</title>
+                            <path
+                                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+                            </path>
+                        </svg>
+                    </a>
+                    <h3>Edit your profile</h3>
+                </div>
+            </div>
+            <div class="layout__body">
+                <form class="form" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        <div class="form__group">
+                            <label for="{{field.label}}">{{field.label}}</label>
+                            {{field}}
+                        </div>
+                    {% endfor %}
+                    
+                    <div class="form__action">
+                        <a class="btn btn--dark" href="{{request.META.HTTP_REFERER}}">Cancel</a>
+                        <button class="btn btn--main" type="submit">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock content %}
