@@ -13,6 +13,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import dj_database_url
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+from urllib.parse import urlparse
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Parse the DATABASE_URL from the environment
+tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,20 +91,30 @@ WSGI_APPLICATION = "EnlightenHub.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     # "default": {
+#     #     "ENGINE": "django.db.backends.postgresql",
+#     #     "NAME": "enlightenhub",
+#     #     "USER": "postgres",
+#     #     "PASSWORD": "password",
+#     #     "HOST": "localhost",  # Replace with your PostgreSQL server's address if necessary
+#     #     "PORT": "",  # Leave empty to use the default PostgreSQL port (usually 5432)
+#     # }
+# }
+
+# database_url = os.environ.get("DATABASE_URL")
+# DATABASES["default"] = dj_database_url.parse(database_url)
+
 DATABASES = {
-    # "default": {
-    #     "ENGINE": "django.db.backends.postgresql",
-    #     "NAME": "enlightenhub",
-    #     "USER": "postgres",
-    #     "PASSWORD": "password",
-    #     "HOST": "localhost",  # Replace with your PostgreSQL server's address if necessary
-    #     "PORT": "",  # Leave empty to use the default PostgreSQL port (usually 5432)
-    # }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": tmpPostgres.path.replace("/", ""),
+        "USER": tmpPostgres.username,
+        "PASSWORD": tmpPostgres.password,
+        "HOST": tmpPostgres.hostname,
+        "PORT": 5432,
+    }
 }
-
-database_url = os.environ.get("DATABASE_URL")
-DATABASES["default"] = dj_database_url.parse(database_url)
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
